@@ -1,0 +1,27 @@
+<form method="post" action="/">
+  <!-- use your form variable here -->
+  <!-- to make your form           -->
+  {{ form.csrf_token }}
+  <!-- {{ form.hidden_tag() }} -->
+  <p>
+    {{ form.name.label }}
+    {{ form.name(size=32) }}
+  </p>
+  <p>
+    {{ form.start_time.label }}
+    {{ form.start_time() }}
+  </p>
+  <p>
+    {{ form.end_time.label }}
+    {{ form.end_time() }}
+  </p>
+  <p>
+    {{ form.description.label }}
+    {{ form.description() }}
+  </p>
+  <p>
+    {{ form.private.label }}
+    {{ form.private() }}
+  </p>
+  <p>{{ form.submit() }}</p>
+</form>

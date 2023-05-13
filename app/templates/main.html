@@ -1,36 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
-  <h1>Calendar working:</h1>  
-  <h4>{{ rows }}</h4>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Start</th>
-        <th>End</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- loop here to create rows -->
-      {% for row in rows %}
-        <tr>
-          <td>{{ row['name'] }}</td>          
-          <!-- use strftime to format date objects -->
-          <!-- (In fact, jinja formats it, but full way) -->
-          <td>{{ row['start_datetime'].strftime("%H:%M") }}</td>          
-          <td>{{ row['end_datetime'].strftime("%H:%M") }}</td>
-          
-        </tr>
-      <!-- loop here to create rows -->
-      {% endfor %}
-    </tbody>
-  </table>
+  <h1>Calendar working:</h1>
+  {% include '_appointment_form_.html' %}
+  {% include '_appointment_table_.html' %}
 </body>
+
 </html>
