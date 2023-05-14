@@ -1,9 +1,11 @@
 """Main routes
 """
 import os
+from datetime import datetime
 import psycopg2
 import psycopg2.extras
 from flask import Blueprint, render_template, redirect
+
 
 from app.forms import AppointmentForm
 
@@ -26,27 +28,34 @@ def main():
         # create a new record in the database
         with psycopg2.connect(**CONNECTION_PARAMETERS) as conn:
             with conn.cursor() as curs:
-                q_select = ("""
+                q_select = """
                 INSERT INTO appointments (
-                    name, start_time, end_time
+                    name, start_datetime, end_datetime, 
+                    description, private
                     )
-                VALUES (%(name)s, %(start_datetime)s,
-                    %(end_datetime)s
-                    )"""
-               )
+                VALUES (
+                    %(name)s, %(start_datetime)s, %(end_datetime)s, 
+                    %(description)s, %(private)s
+                    )
+                ;"""
+                params = {
+                    'name': form.name.data,
+                    'start_datetime': datetime.combine(form.start_date.data, form.start_time.data),
+                    'end_datetime': datetime.combine(form.end_date.data, form.end_time.data),
+                    'description': form.description.data,
+                    'private': form.private.data
+                }
 
-                curs.execute(q_select,
-                    {'name': form.name,
-                    'start_datetime': form.start_time,
-                    'end_datetime': form.end_time
-                    })
+                curs.execute(q_select, params)
+                return redirect('/')
 
 
-        return redirect('/')
+        
 
     # Create a psycopg2 connection with the connection parameters
+    print('Form is not submit or validated')
     with psycopg2.connect(**CONNECTION_PARAMETERS) as conn:
-        print(conn.get_dsn_parameters())
+        print('Setting connection')
         # Create a cursor from the connection
         ### extras makes dictionary read instead of tuples
         with conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor) as curs:

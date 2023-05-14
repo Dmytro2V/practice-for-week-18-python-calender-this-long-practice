@@ -8,12 +8,18 @@
     {{ form.name(size=32) }}
   </p>
   <p>
+    {{ form.start_date.label }}
+    {{ form.start_date() }}
+
     {{ form.start_time.label }}
     {{ form.start_time() }}
   </p>
   <p>
+    {{ form.end_date.label }}
+    {{ form.end_date() }}
+
     {{ form.end_time.label }}
-    {{ form.end_time() }}
+    {{ form.end_time() }}   
   </p>
   <p>
     {{ form.description.label }}
