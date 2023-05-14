@@ -1,11 +1,10 @@
 """Main routes
 """
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import psycopg2
 import psycopg2.extras
-from flask import Blueprint, render_template, redirect
-
+from flask import Blueprint, render_template, redirect, url_for
 
 from app.forms import AppointmentForm
 
@@ -20,9 +19,20 @@ CONNECTION_PARAMETERS = {
 }
 
 
-@bp.route("/", methods = ['GET', 'POST'])
+@bp.route("/", methods = ['GET'])
 def main():
     '''Main route'''
+    current_date_time = datetime.now() # has {year month day}
+    year = current_date_time.year
+    month = current_date_time.month
+    day = current_date_time.day
+    return redirect(url_for('.daily', year = year, month = month, day = day))
+
+@bp.route("/<int:year>/<int:month>/<int:day>", methods = ['GET', 'POST'])
+def daily(year, month, day):
+    '''Copies main route but for day selected
+    renders daily appoints... and what about form?
+    '''
     form = AppointmentForm()
     if form.validate_on_submit(): # POST and valid
         # create a new record in the database
@@ -49,13 +59,14 @@ def main():
                 curs.execute(q_select, params)
                 return redirect('/')
 
-
-        
-
     # Create a psycopg2 connection with the connection parameters
     print('Form is not submit or validated')
     with psycopg2.connect(**CONNECTION_PARAMETERS) as conn:
         print('Setting connection')
+        # constuct from args:
+        day = datetime(year, month, day) # pylint: disable = unused-variable
+        next_day = day + timedelta(days = 1)
+
         # Create a cursor from the connection
         ### extras makes dictionary read instead of tuples
         with conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor) as curs:
@@ -63,8 +74,14 @@ def main():
             q_select = """
                 SELECT id, name, start_datetime, end_datetime
                 FROM appointments
-                ORDER BY start_datetime;"""
-            curs.execute(q_select)
+                WHERE start_datetime BETWEEN %(day)s AND %(next_day)s
+                ORDER BY start_datetime
+            ;"""
+            params = {
+                'day': day,
+                'next_day': next_day
+            }
+            curs.execute(q_select, params)
             # Fetch all of the records
             rows = curs.fetchall()
             # for row in rows:

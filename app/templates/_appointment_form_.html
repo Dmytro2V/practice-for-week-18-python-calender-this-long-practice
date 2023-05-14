@@ -1,33 +1,35 @@
-<form method="post" action="/">
+<form method="post" action="">
+  <!-- empty action means still submit on same path form resides on -->
   <!-- use your form variable here -->
   <!-- to make your form           -->
   {{ form.csrf_token }}
   <!-- {{ form.hidden_tag() }} -->
   <p>
-    {{ form.name.label }}
-    {{ form.name(size=32) }}
+    {{ form.name.label }}    {{ form.name(size=32) }}
   </p>
   <p>
-    {{ form.start_date.label }}
-    {{ form.start_date() }}
+    {{ form.start_date.label }}    {{ form.start_date() }}
 
-    {{ form.start_time.label }}
-    {{ form.start_time() }}
+    {{ form.start_time.label }}    {{ form.start_time() }}
   </p>
   <p>
-    {{ form.end_date.label }}
-    {{ form.end_date() }}
+    {{ form.end_date.label }}    {{ form.end_date() }} 
 
-    {{ form.end_time.label }}
-    {{ form.end_time() }}   
+    {{ form.end_time.label }}    {{ form.end_time() }}   
+    
+    {% if form.end_date.errors %}
+    <ul class="errors">
+      {% for error in form.end_date.errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
   </p>
   <p>
-    {{ form.description.label }}
-    {{ form.description() }}
+    {{ form.description.label }}    {{ form.description() }}
   </p>
   <p>
-    {{ form.private.label }}
-    {{ form.private() }}
+    {{ form.private.label }}    {{ form.private() }}
   </p>
   <p>{{ form.submit() }}</p>
 </form>
